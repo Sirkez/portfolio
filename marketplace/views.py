@@ -114,7 +114,7 @@ class MyAuctionsListView(ListView):
     context_object_name = 'auctions'
 
     def get_context_data(self, object_list = None, **kwargs):
-        object_list = Auction.objects.filter    (created_by = self.request.user.id)
+        object_list = Auction.objects.filter(created_by = self.request.user.id)
 
         return super().get_context_data(object_list = object_list, **kwargs)
     

@@ -50,10 +50,12 @@ class AuctionDetailView(DetailView):
     context_object_name = 'auction'
 
     def get_context_data(self, **kwargs):
-        if Auction.objects.get(pk = self.kwargs['pk']) in CustomUser.objects.get(id = self.request.user.id).watchlist.all():
-            watchlist = True
-        else:
-            watchlist = None
+        watchlist = None
+        if self.request.user.is_authenticated:
+            if Auction.objects.get(pk = self.kwargs['pk']) in CustomUser.objects.get(id = self.request.user.id).watchlist.all():
+                watchlist = True
+            else:
+                watchlist = None
         return super().get_context_data(**kwargs,
                     category = Auction.objects.get(pk = self.kwargs['pk']).category,
                     watchlist = watchlist)
@@ -81,15 +83,18 @@ class CategoryListView(ListView):
                     **kwargs)
 
 
-class WatchlistView(LoginRequiredMixin, View):
+class WatchlistView(LoginRequiredMixin, ListView):
+    model = Auction
     template_name='marketplace/watchlist.html'
+    paginate_by = 5
+    context_object_name = 'watchlist'
 
-    def get(self, request):
-        user_watchlist = CustomUser.objects.get(id = self.request.user.id).watchlist
-        return render (request, template_name='marketplace/watchlist.html',
-                       context={'watchlist': user_watchlist.all(),
-                                'count': user_watchlist.all().count()
-                                })
+    def get_context_data(self,  object_list=None, **kwargs):
+        user_watchlist = CustomUser.objects.get(id = self.request.user.id).watchlist.all()
+        return super().get_context_data(
+                    object_list = user_watchlist,
+                    count = user_watchlist.count(),
+                    **kwargs)
     
 
     def post(self, request):
@@ -119,11 +124,18 @@ class MyAuctionsListView(ListView):
         return super().get_context_data(object_list = object_list, **kwargs)
     
 
-class MyAuctionUpdateView(LoginRequiredMixin ,UpdateView):
+class MyAuctionUpdateView(LoginRequiredMixin, UpdateView):
     model = Auction
     template_name = 'marketplace/update.html'
     context_object_name = 'auction'
     fields = ['name', 'category', 'price', 'photo', 'description']
+
+    def dispatch(self, request, *args, **kwargs):
+        # Making sure that only authors can update stories
+        obj = self.get_object()
+        if obj.created_by != self.request.user:
+            return redirect('marketplace:index')
+        return super(MyAuctionUpdateView, self).dispatch(request, *args, **kwargs)
 
 
 class MyAuctionDeleteView(LoginRequiredMixin ,DeleteView):
@@ -131,3 +143,11 @@ class MyAuctionDeleteView(LoginRequiredMixin ,DeleteView):
     template_name = 'marketplace/delete.html'
     context_object_name = 'auction'
     success_url = reverse_lazy('marketplace:my_auctions')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Making sure that only authors can update stories
+        obj = self.get_object()
+        if obj.created_by != self.request.user:
+            return redirect('marketplace:index')
+        return super(MyAuctionUpdateView, self).dispatch(request, *args, **kwargs)
+

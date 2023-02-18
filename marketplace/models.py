@@ -34,7 +34,7 @@ class Auction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=16, decimal_places=2)
     description = models.TextField(max_length=2000, blank=True)
-    photo = models.ImageField(upload_to='marketplace/', blank=True, default='/blank/blank.jpg')
+    photo = models.ImageField(upload_to='marketplace/', blank=True, default='blank/blank.jpg')
     created_by = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
     date = models.DateField(default=datetime.date.today, db_index=True)
     slug = models.SlugField(max_length=200)

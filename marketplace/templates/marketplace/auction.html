@@ -1,0 +1,54 @@
+{% extends "marketplace/base.html" %}
+
+{% block title %}
+    {{ auction.name }}
+{% endblock %}    
+
+{% block content %}
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 9fr;
+    }
+    table {
+    border-collapse: collapse;
+    align-items: center;
+    }
+    
+    tr{
+        border-bottom: 1px solid black;     
+    }
+    td {
+        padding: 15px;
+    }
+</style>
+<div class="home-container" >
+    <div style="border-right: 1px solid black;">
+        Category: <a href="{% url 'marketplace:category' category %}">{{ category }}</a>
+        <p>Created by: {{ auction.created_by }}</p>
+        <p>{{ auction.date }}</p>
+
+        {% if user.is_authenticated %}
+            <form action="{% url 'marketplace:watchlist' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ auction.id }}">
+
+                {% if watchlist %}
+                    <input type="hidden" name="remove_watchlist" value="{{ auction.id }}"> 
+                    <button>Remove from watchlist</button>
+                {% else %}                
+                    <input type="hidden" name="add_watchlist" value="{{ auction.id }}"> 
+                    <button>Add to watchlist</button>
+                {% endif %}
+
+            </form>
+        {% endif %}            
+    </div>
+    <div style="padding-left: 20px;">
+        <h2>{{ auction.name }}</h2>
+        <h3>{{ auction.price }}$</h3>
+        <img src="{{ MEDIA_URL }}{{ auction.photo }}" alt="{{ auction.name }}" style="width: 400px; height: auto;"><br>
+        {{ auction.description|linebreaksbr }}
+    </div>
+</div>    
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "marketplace/base.html" %}
+{% block title %}
+    Create Auction
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button>Create</button>
+    </form>
+{% endblock %}
+
+

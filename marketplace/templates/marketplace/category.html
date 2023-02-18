@@ -1,0 +1,67 @@
+{% extends "marketplace/base.html" %}
+
+{% block title %}
+    {{ view.category }}
+{% endblock %}
+
+{% block content %}
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 8fr;
+    }
+    table {
+    border-collapse: collapse;
+    align-items: center;
+    }
+    
+    tr{
+        border-bottom: 1px solid black;     
+    }
+    td {
+        padding: 15px;
+    }
+</style>
+<div class="home-container" >
+    <div style="border-right: 1px solid black;">
+        <h2>Filters:</h2>
+
+        <form method="get">
+            {% for field in form %}
+                <p>{{ field.label }}</p>
+                <p>{{ field }}</p>
+                <hr>
+            {% endfor %}                
+            <button>Filter</button>
+            <br><br> 
+        </form>
+
+        <form action="{% url 'marketplace:category' category %}" method="get">
+            <button>Clear</button>
+        </form>
+
+    </div>
+    <div style="padding-left: 20px;">
+        {% if count != 1 %}
+            <p>{{ count }} auctions found.</p>
+        {% else %}
+            <p>{{ count }} auction found.</p>
+        {% endif %}
+                                     
+        <table>
+            {% for auction in auctions %}
+                <tr>
+                    <td><p><h3><a href="{{ auction.get_absolute_url }}">{{ auction.name }}</a></h3></p>
+                        <img src="{{ MEDIA_URL }}{{ auction.photo }}" alt="{{auction.name}}" style="width: 200px; height: auto;"><br>
+                        <p>{{ auction.description|linebreaksbr }}</p>
+                        <p>{{ auction.price }}$</p>                    
+                    </td>
+                </tr>
+            {% endfor %}                
+        </table>
+
+        {% include "_pagination.html" %}
+        
+    </div>
+</div>
+{% endblock %}

@@ -149,5 +149,5 @@ class MyAuctionDeleteView(LoginRequiredMixin ,DeleteView):
         obj = self.get_object()
         if obj.created_by != self.request.user:
             return redirect('marketplace:index')
-        return super(MyAuctionUpdateView, self).dispatch(request, *args, **kwargs)
+        return super(MyAuctionDeleteView, self).dispatch(request, *args, **kwargs)
 

@@ -25,7 +25,9 @@ urlpatterns = [
     path('', include(('home.urls','home'), namespace='home')),
     path('accounts/', include(('accounts.urls','accounts'), namespace='accounts')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('marketplace/', include(('marketplace.urls','marketplace'), namespace='marketplace'))
+    path('marketplace/', include(('marketplace.urls','marketplace'), namespace='marketplace')),
+    path('expenses/', include(('expenses.urls', 'expenses'), namespace='expenses'))
+    #path('movies', include(('movies.urls','movies'), namespace='movies'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = TemplateView.as_view(template_name="404.html")

@@ -38,9 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home.apps.HomeConfig',
-    'accounts.apps.AccountsConfig',
-    'marketplace.apps.MarketplaceConfig'
+    
+    'rest_framework',
+
+    'home',
+    'accounts',
+    'marketplace',
+    'expenses',
+    #'movies',
 ]
 
 MIDDLEWARE = [

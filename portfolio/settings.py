@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'rest_framework',
+    'rest_framework.authtoken',
 
     'home',
     'accounts',
@@ -87,6 +88,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+# Rest framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':{
+        'rest_framework.permissions.IsAuthenticated',
     }
 }
 

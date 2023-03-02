@@ -1,14 +1,8 @@
 from rest_framework import serializers
 
-from .models import Category, Expenses
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
+from .models import Expenses
 
 class ExpensesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expenses
-        fields = '__all__'
+        exclude = ('owner',)

@@ -1,8 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth import authenticate, login 
+from django.contrib.auth import login
+
+from rest_framework.authtoken.models import Token
 
 from .forms import CustomUserCreationForm
 
@@ -22,8 +24,8 @@ class RegisterCreateView(CreateView):
 
     # Login user after registration
     def form_valid(self, form):
-        response = super().form_valid(form)
         user = form.save()
+        Token.objects.create(user = user)
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect(self.request.GET.get('next','accounts:index'))
   

@@ -2,6 +2,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from collections import OrderedDict, defaultdict
+from django.db.models.functions import Coalesce
+from django.db.models import Sum, Value, CharField, Count, F
 
 from .models import Expenses
 from .serializers import ExpensesSerializer
@@ -10,12 +13,11 @@ class ExpensesViewSet(viewsets.ModelViewSet):
     queryset = Expenses.objects.all()
     serializer_class = ExpensesSerializer
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (TokenAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
 
-
-    
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
     # Show only user expenses
     def get_queryset(self):
@@ -54,6 +56,31 @@ class ExpensesViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         expenses = self.filter_queryset(self.get_queryset())
         expenses_count = expenses.count()
+        total_amount = expenses.aggregate(Sum('amount'))
+
+        summary_per_category = OrderedDict(sorted(
+            expenses
+            .annotate(category_name=Coalesce('category', Value('-')))
+            .values('category_name')
+            .annotate(s=Sum('amount'))
+            .values_list('category_name', 's')))
+        
+        summary_year_month =((
+            expenses.values('date__year','date__month')
+            .annotate(s=Sum('amount'))
+            .order_by('-date__year','-date__month')
+            .values_list('date__year','date__month','s')
+            ))
+        
+        data = defaultdict(lambda: defaultdict(dict))
+        for year, month, s in summary_year_month:
+            data[year][month] = s
+
         serializer = ExpensesSerializer(expenses, many=True)
-        response = {'expenses' : serializer.data, 'expenses_count':expenses_count, 'User':self.request.user.username}
+        response = {'expenses' : serializer.data,
+                    'expenses_count': expenses_count,
+                    'summary_per_category': summary_per_category,
+                    'total_amount': total_amount,
+                    'summary_per_year': data, 
+                    'User': self.request.user.username}
         return Response(response)

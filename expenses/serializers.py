@@ -5,4 +5,4 @@ from .models import Expenses
 class ExpensesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expenses
-        exclude = ('owner',)
+        exclude = ('owner','slug')

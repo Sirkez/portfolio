@@ -38,7 +38,7 @@ class UserLoginView(LoginView):
 class UserLogoutView(LogoutView):
     redirect_authenticated_user = True
 
-
+    # Redirect after Logout
     def get_succes_url(self):
          return redirect(self.request.GET.get('next','accounts:index'))
 

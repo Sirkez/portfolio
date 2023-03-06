@@ -49,6 +49,7 @@ class AuctionDetailView(DetailView):
     template_name = 'marketplace/auction.html'
     context_object_name = 'auction'
 
+    # Display Auction details
     def get_context_data(self, **kwargs):
         watchlist = None
         if self.request.user.is_authenticated:
@@ -67,6 +68,7 @@ class CategoryListView(ListView):
     context_object_name = 'auctions'
     paginate_by = 5
 
+    # Display auctions by category
     def get_context_data(self, object_list=None, **kwargs):
         queryset = object_list if object_list is not None else self.object_list
         category = self.kwargs['category']
@@ -89,6 +91,7 @@ class WatchlistView(LoginRequiredMixin, ListView):
     paginate_by = 5
     context_object_name = 'watchlist'
 
+    # Display watchlist    
     def get_context_data(self,  object_list=None, **kwargs):
         user_watchlist = CustomUser.objects.get(id = self.request.user.id).watchlist.all()
         return super().get_context_data(
@@ -97,6 +100,7 @@ class WatchlistView(LoginRequiredMixin, ListView):
                     **kwargs)
     
 
+    # Adding Auction to watchlist
     def post(self, request):
         user_watchlist = CustomUser.objects.get(id = self.request.user.id).watchlist
         id = self.request.POST.get('id')
@@ -145,7 +149,7 @@ class MyAuctionDeleteView(LoginRequiredMixin ,DeleteView):
     success_url = reverse_lazy('marketplace:my_auctions')
 
     def dispatch(self, request, *args, **kwargs):
-        # Making sure that only authors can update stories
+        # Making sure that only authors can delete stories
         obj = self.get_object()
         if obj.created_by != self.request.user:
             return redirect('marketplace:index')

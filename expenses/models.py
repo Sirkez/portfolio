@@ -18,7 +18,7 @@ class Expenses(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(unique=True, null = True)
 
-
+    # Saving unique slug
     def save(self, *args, **kwargs):
         unique_slugify(self, self.name)
         super(Expenses, self).save(*args, **kwargs)

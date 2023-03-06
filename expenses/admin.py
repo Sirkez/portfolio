@@ -2,4 +2,7 @@ from django.contrib import admin
 
 from .models import Expenses
 
-admin.site.register(Expenses)
+class ExpensesAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+
+admin.site.register(Expenses, ExpensesAdmin)

@@ -18,17 +18,7 @@ class Auction(models.Model):
 
     class Meta:
         ordering = ('-date', '-pk')
-
-    """CATEGORY = [
-        ('am','Automotive'),
-        ('re','Real Estate'),
-        ('jb','Job'),
-        ('hg','House and Garden'),
-        ('ec','Electronics'),
-        ('fa','Fashion'),
-        ('sp','Sport'),
-        ('ot','Other')
-    ]"""
+        
     
     name = models.CharField(max_length=64)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)

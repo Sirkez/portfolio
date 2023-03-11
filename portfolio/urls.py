@@ -28,6 +28,9 @@ urlpatterns = [
     path('marketplace/', include(('marketplace.urls','marketplace'), namespace='marketplace')),
     path('expenses/', include(('expenses.urls', 'expenses'), namespace='expenses'))
     #path('movies', include(('movies.urls','movies'), namespace='movies'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = TemplateView.as_view(template_name="404.html")

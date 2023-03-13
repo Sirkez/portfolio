@@ -7,8 +7,13 @@
 {% block content %}
 <div style="text-align: center;">
     <h1>Apps:</h1>
-    <a href="{% url 'accounts:index' %}">Accounts</a><br>
-    <a href="{% url 'marketplace:index' %}">Marketplace</a><br>
-    <a href="{% url 'expenses:index' %}">Expenses</a>
+    {% for post in posts %}
+        <a href="{{ post.headline|lower }}">{{ post.headline }}</a> 
+        {% if user.is_staff %}
+            | <a href="{% url 'home:update' post.slug %}">Update</a> |
+            <a href="{% url 'home:delete' post.slug %}">Delete</a>
+        {% endif %}<br>  
+    {% endfor %}
+    
 </div>
 {% endblock %} 

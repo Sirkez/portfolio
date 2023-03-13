@@ -1,0 +1,16 @@
+{% extends "home/base.html" %}
+
+{% block title %}
+    Delete {{ post.headline }}
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h4 style="margin-top: 5%;">Are you sure You want to remove {{ post.headline }}?</h4>  
+    <form method="post">
+        {% csrf_token %}
+        <button>Delete</button>
+        <button type="button"><a href="{% url 'home:index' %}" style="text-decoration:none; color: black;">Back</a></button>
+    </form>
+</div>
+{% endblock %} 
